@@ -3,469 +3,383 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>한강 푸르지오 리버프론트 — 공식 분양 상담</title>
+  <title>한강 푸르지오 리버프론트 — 모델하우스 VIP 방문예약 및 잔여세대 조회</title>
   <style>
-    :root {
-      --bg-base: #f8fafc;
-      --surface: #ffffff;
-      --border: #e2e8f0;
-      --border-dark: #cbd5e1;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --primary: #164e43;
-      --primary-soft: #f2f7f5;
-      --accent: #2563eb;
-      --call: #15803d;
-    }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
-      background-color: #f1f5f9; color: var(--text-main);
-      display: flex; justify-content: center; min-height: 100vh;
-      -webkit-font-smoothing: antialiased; letter-spacing: -0.025em;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      background-color: #f4f5f7; color: #191f28; display: flex; justify-content: center; min-height: 100vh; padding: 0;
     }
-    .wrapper {
-      width: 100%; max-width: 440px; background-color: var(--surface); min-height: 100vh;
-      display: flex; flex-direction: column; box-shadow: 0 4px 25px rgba(0,0,0,0.06);
-      position: relative; padding-bottom: 84px;
+    .container {
+      width: 100%; max-width: 440px; background-color: #ffffff; min-height: 100vh;
+      display: flex; flex-direction: column; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); position: relative;
     }
-
-    /* 상단 미니멀 헤더 */
     .header {
-      background-color: rgba(255, 255, 255, 0.96); backdrop-filter: blur(12px);
-      padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;
-      position: sticky; top: 0; z-index: 30; border-bottom: 1px solid var(--border);
+      background-color: #111827; color: #ffffff; padding: 14px 20px; display: flex;
+      justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 20;
     }
-    .header-sub { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 2px; }
-    .header-title { font-size: 18px; font-weight: 800; color: var(--text-main); cursor: pointer; }
-    .header-cta {
-      background-color: var(--primary); color: #ffffff; font-size: 14px; font-weight: 700;
-      padding: 9px 15px; border-radius: 8px; border: none; cursor: pointer;
+    .header-title { font-size: 15px; font-weight: 800; letter-spacing: -0.3px; }
+    .header-btn {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: #ffffff; text-decoration: none;
+      font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 20px; box-shadow: 0 2px 6px rgba(37,99,235,0.3);
     }
-
-    /* 본문 공통 여백 */
-    .section { padding: 24px 20px; border-bottom: 1px solid var(--border); }
-    .section-title {
-      font-size: 16px; font-weight: 800; color: var(--text-main); margin-bottom: 14px;
-      display: flex; align-items: center; gap: 6px;
+    .tab-bar { display: flex; background-color: #f1f5f9; border-bottom: 1px solid #e2e8f0; font-size: 13px; }
+    .tab-btn {
+      flex: 1; padding: 12px; text-align: center; background: none; border: none; cursor: pointer;
+      font-weight: 600; color: #64748b; border-bottom: 2px solid transparent;
     }
-
-    /* 헤더 아래 메인 안내 문구 */
-    .hero-box { padding: 28px 20px 20px 20px; }
-    .hero-h1 { font-size: 17px; font-weight: 800; line-height: 1.5; color: var(--text-main); margin-bottom: 8px; }
-    .hero-sub { font-size: 15px; color: var(--text-muted); line-height: 1.6; word-break: keep-all; }
-
-    /* 특별 혜택 배너 */
-    .benefit-banner {
-      background-color: #fefce8; border: 1.5px solid #fef08a; border-radius: 10px;
-      padding: 14px 16px; margin: 0 20px 20px 20px; font-size: 14px; color: #854d0e; line-height: 1.55;
+    .tab-btn.active { color: #111827; background-color: #ffffff; border-bottom: 2px solid #111827; }
+    .hero {
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); color: #ffffff; padding: 28px 20px 24px 20px; text-align: center;
     }
-    .benefit-banner strong { color: #713f12; }
-
-    /* 4대 평형 카드 그리드 */
-    .card-grid {
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
-      padding: 0 20px 28px 20px;
+    .badge {
+      display: inline-block; background-color: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.4);
+      color: #fbbf24; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 12px; margin-bottom: 10px;
     }
-    .unit-card {
-      background-color: #ffffff; border: 1.5px solid var(--border); border-radius: 12px;
-      padding: 18px 16px; display: flex; flex-direction: column; justify-content: space-between;
-      min-height: 185px; cursor: pointer; transition: all 0.15s ease;
+    .hero-title { font-size: 23px; font-weight: 900; line-height: 1.35; margin-bottom: 8px; }
+    .hero-title span { color: #fbbf24; }
+    .hero-desc { font-size: 13px; color: #cbd5e1; line-height: 1.5; }
+    .promo-banner {
+      background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; margin: 16px 20px 0 20px;
+      border-radius: 6px; font-size: 12px; color: #92400e; line-height: 1.5;
     }
-    .unit-card.active { border-color: var(--primary); background-color: var(--primary-soft); }
-    .unit-size { font-size: 22px; font-weight: 900; color: var(--text-main); }
-    .unit-count { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-top: 4px; margin-bottom: 14px; }
-    .unit-price { font-size: 15px; font-weight: 800; color: var(--text-main); line-height: 1.4; word-break: keep-all; }
-    .unit-action { margin-top: 16px; font-size: 13px; font-weight: 700; color: var(--primary); }
-
-    /* 단지 개요 정보 리스트 */
+    .promo-banner strong { color: #78350f; }
+    .content-section { padding: 20px; border-bottom: 1px solid #e2e8f0; }
+    .section-title { font-size: 14px; font-weight: 800; color: #1e293b; margin-bottom: 12px; }
     .info-list {
-      background-color: var(--bg-base); border: 1px solid var(--border); border-radius: 12px;
-      padding: 16px 18px; font-size: 14px; line-height: 1.7; color: var(--text-muted);
+      background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 16px;
+      font-size: 12px; line-height: 1.65; color: #475569;
     }
-    .info-list li { list-style: none; margin-bottom: 6px; }
+    .info-list li { list-style: none; position: relative; padding-left: 14px; margin-bottom: 6px; }
     .info-list li:last-child { margin-bottom: 0; }
-    .info-list strong { color: var(--text-main); }
-
-    /* 프리미엄 카드 */
+    .info-list li::before { content: "•"; position: absolute; left: 0; color: #2563eb; font-weight: bold; }
+    .info-list strong { color: #1e293b; }
+    .price-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .price-card { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; }
+    .price-card .type { font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 4px; }
+    .price-card .price { font-size: 14px; font-weight: 800; color: #2563eb; }
     .point-card {
-      background-color: #ffffff; border: 1px solid var(--border); border-radius: 10px;
-      padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 12px;
+      background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 14px;
+      margin-bottom: 8px; display: flex; align-items: flex-start; gap: 10px;
     }
     .point-card:last-child { margin-bottom: 0; }
     .point-badge {
-      font-size: 11px; font-weight: 800; background-color: #eff6ff; color: var(--accent);
-      padding: 4px 8px; border-radius: 6px; flex-shrink: 0; margin-top: 2px;
+      font-size: 10px; font-weight: 800; background-color: #eff6ff; color: #2563eb; padding: 3px 6px; border-radius: 4px; flex-shrink: 0;
     }
-    .point-text h4 { font-size: 15px; font-weight: 800; color: var(--text-main); margin-bottom: 3px; }
-    .point-text p { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
-
-    /* 상담 신청 폼 */
-    .form-wrap { background-color: var(--bg-base); padding: 32px 20px; }
-    .form-h2 { font-size: 20px; font-weight: 800; color: var(--text-main); margin-bottom: 6px; }
-    .form-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; }
-    
-    .field { margin-bottom: 16px; }
-    .label { display: block; font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
-    .input {
-      width: 100%; height: 54px; padding: 0 16px; font-size: 17px; font-weight: 500;
-      border: 1.5px solid var(--border-dark); border-radius: 10px; background-color: #ffffff;
-      color: var(--text-main); outline: none; transition: border-color 0.2s;
+    .point-content h4 { font-size: 13px; font-weight: 700; color: #1e293b; margin-bottom: 2px; }
+    .point-content p { font-size: 12px; color: #64748b; line-height: 1.45; }
+    .form-section { padding: 24px 20px; flex: 1; background-color: #f8fafc; }
+    .form-box {
+      background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);
     }
-    .input:focus { border-color: var(--primary); }
-    .error-msg { color: #dc2626; font-size: 13px; font-weight: 600; margin-top: 6px; display: none; }
-
-    .btn-submit {
-      width: 100%; height: 56px; background-color: var(--primary); color: #ffffff;
-      font-size: 18px; font-weight: 800; border: none; border-radius: 10px;
-      cursor: pointer; margin-top: 8px;
+    .form-header { text-align: center; margin-bottom: 16px; }
+    .form-header h3 { font-size: 18px; font-weight: 800; color: #111827; margin-top: 4px; }
+    .form-header p { font-size: 12px; color: #64748b; margin-top: 2px; }
+    .purpose-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 14px; }
+    .purpose-btn {
+      border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 10px 8px; text-align: center;
+      font-size: 12px; font-weight: 700; color: #475569; cursor: pointer; background-color: #ffffff;
     }
-
-    /* 하단 고정 바 */
-    .bottom-bar {
-      position: fixed; bottom: 0; width: 100%; max-width: 440px;
-      background-color: #ffffff; border-top: 1px solid var(--border);
-      display: grid; grid-template-columns: 1fr 1fr 1.6fr;
-      padding: 10px 14px; gap: 8px; z-index: 40;
+    .purpose-btn.selected { border-color: #2563eb; background-color: #eff6ff; color: #2563eb; }
+    .notice-box {
+      background-color: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 12px;
+      font-size: 11px; color: #475569; line-height: 1.4; margin-bottom: 16px;
     }
-    .bar-btn {
-      display: flex; align-items: center; justify-content: center; gap: 6px;
-      height: 48px; border-radius: 8px; font-size: 14px; font-weight: 700;
-      text-decoration: none; cursor: pointer; border: 1px solid var(--border);
-      background-color: #ffffff; color: var(--text-main);
+    .notice-box strong { color: #1e293b; }
+    .input-group { margin-bottom: 14px; }
+    .input-label { display: block; font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 6px; }
+    .input-field {
+      width: 100%; padding: 12px 14px; font-size: 14px; border: 1.5px solid #cbd5e1;
+      border-radius: 10px; outline: none; transition: border-color 0.2s;
     }
-    .bar-btn-primary { background-color: var(--primary); color: #ffffff; border: none; font-size: 15px; font-weight: 800; }
-
-    /* 완료 모달 */
-    .modal {
-      display: none; position: fixed; inset: 0; background-color: rgba(0,0,0,0.6);
-      z-index: 50; align-items: center; justify-content: center; padding: 20px;
+    .input-field:focus { border-color: #2563eb; }
+    .error-msg { color: #dc2626; font-size: 11px; margin-top: 4px; display: none; }
+    .radio-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .radio-card {
+      border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 10px 6px; text-align: center;
+      font-size: 12px; font-weight: 600; color: #64748b; cursor: pointer;
     }
-    .modal-box {
-      width: 100%; max-width: 380px; background-color: #ffffff;
-      border-radius: 16px; padding: 32px 24px; text-align: center;
+    .radio-card.selected { border-color: #2563eb; color: #2563eb; background-color: #eff6ff; }
+    .submit-btn {
+      width: 100%; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: #ffffff;
+      font-size: 16px; font-weight: 800; padding: 14px; border: none; border-radius: 12px;
+      cursor: pointer; margin-top: 8px; box-shadow: 0 4px 12px rgba(37,99,235,0.25);
     }
-    .modal-icon {
-      width: 56px; height: 56px; border-radius: 50%; background-color: #dcfce7;
-      color: #16a34a; font-size: 28px; font-weight: 900;
-      display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;
+    .submit-btn:active { transform: scale(0.99); }
+    .complete-view { display: none; padding: 40px 20px; text-align: center; }
+    .complete-icon {
+      width: 56px; height: 56px; background-color: #dcfce7; color: #16a34a; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 16px auto;
     }
-    .modal-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
-    .modal-desc { font-size: 15px; color: var(--text-muted); line-height: 1.5; margin-bottom: 24px; }
-    .modal-btn {
-      width: 100%; height: 50px; background-color: var(--primary); color: #ffffff;
-      font-size: 16px; font-weight: 700; border-radius: 10px; border: none; cursor: pointer;
+    .complete-view h2 { font-size: 20px; font-weight: 800; color: #111827; margin-bottom: 8px; }
+    .complete-view p { font-size: 13px; color: #64748b; line-height: 1.5; margin-bottom: 24px; }
+    .btn-action {
+      display: block; width: 100%; padding: 12px; border-radius: 10px; font-size: 14px;
+      font-weight: 700; text-decoration: none; margin-bottom: 10px; cursor: pointer;
     }
-
-    /* 관리자 뷰 (비밀번호: 2580) */
-    .admin-view { display: none; padding: 24px 20px; }
-    .admin-lock { text-align: center; padding: 48px 0; }
+    .btn-call { background-color: #16a34a; color: #ffffff; border: none; }
+    .btn-reset { background-color: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+    .admin-view { display: none; padding: 20px; flex: 1; }
+    .lock-box { text-align: center; padding: 40px 20px; }
+    .lock-box h2 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+    .lock-box p { font-size: 12px; color: #64748b; margin-bottom: 16px; }
     .pin-input {
-      width: 160px; height: 52px; font-size: 24px; text-align: center;
-      letter-spacing: 6px; border: 1.5px solid var(--border-dark); border-radius: 10px;
-      margin-bottom: 12px; outline: none;
+      width: 140px; padding: 10px; font-size: 18px; text-align: center; letter-spacing: 4px;
+      border: 1.5px solid #cbd5e1; border-radius: 8px; margin-bottom: 10px; outline: none;
     }
-    .admin-filter { display: flex; gap: 8px; margin-bottom: 16px; }
-    .filter-btn {
-      flex: 1; height: 38px; border: 1px solid var(--border); border-radius: 6px;
-      background: #ffffff; font-size: 13px; font-weight: 700; cursor: pointer; color: var(--text-muted);
+    .lead-card {
+      background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 16px;
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.03);
     }
-    .filter-btn.active { background-color: var(--text-main); color: #ffffff; border-color: var(--text-main); }
-    .lead-row {
-      background-color: #ffffff; border: 1.5px solid var(--border); border-radius: 12px;
-      padding: 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+    .lead-name { font-size: 15px; font-weight: 700; color: #1e293b; }
+    .lead-phone { font-size: 14px; font-family: monospace; color: #2563eb; font-weight: 600; }
+    .lead-time { font-size: 11px; color: #94a3b8; }
+    .btn-lead-call {
+      background-color: #16a34a; color: #ffffff; text-decoration: none; font-size: 12px;
+      font-weight: 700; padding: 8px 12px; border-radius: 8px; flex-shrink: 0;
     }
-    .lead-tag {
-      display: inline-block; font-size: 11px; font-weight: 800; padding: 2px 6px;
-      border-radius: 4px; background: #e2e8f0; color: #334155; margin-bottom: 4px;
-    }
-    .lead-name { font-size: 16px; font-weight: 800; color: var(--text-main); }
-    .lead-phone { font-size: 15px; font-family: monospace; font-weight: 700; color: var(--accent); margin: 2px 0; }
-    .lead-call {
-      background-color: var(--call); color: #ffffff; text-decoration: none;
-      padding: 10px 14px; border-radius: 8px; font-size: 13px; font-weight: 800; flex-shrink: 0;
-    }
-
-    /* 푸터 */
     .footer {
-      padding: 24px 20px; text-align: center; font-size: 12px; color: var(--text-muted);
-      line-height: 1.6; border-top: 1px solid var(--border); background-color: var(--bg-base);
+      background-color: #f8fafc; border-top: 1px solid #e2e8f0; padding: 18px 20px;
+      text-align: center; font-size: 11px; color: #64748b; margin-top: auto; line-height: 1.6;
     }
+    .footer strong { color: #1e293b; }
   </style>
 </head>
 <body>
 
-  <div class="wrapper">
-
-    <!-- 상단 헤더 -->
+  <div class="container">
     <header class="header">
-      <div>
-        <div class="header-sub">전문 분양상담가</div>
-        <div class="header-title" title="3회 연속 클릭 시 관리자 모드">한강 푸르지오 리버프론트</div>
-      </div>
-      <button id="btn-top-cta" class="header-cta" type="button">상담 신청 →</button>
+      <div class="header-title">한강 푸르지오 리버프론트</div>
+      <a href="tel:1533-8757" class="header-btn">📞 1533-8757</a>
     </header>
 
-    <!-- 사용자 메인 뷰 -->
-    <main id="view-user">
-      
-      <!-- 안내 헤드라인 -->
-      <section class="hero-box">
-        <h1 class="hero-h1">2026.7.30 최초 입주자모집공고 전체 공급 가격 안내</h1>
-        <p class="hero-sub">
-          현재 선택 가능한 잔여 세대 및 특별 혜택 금액은 실시간 조회가 필요합니다.<br/>
-          (발코니 확장비·유상옵션·중도금 대출 조건 상담 지원)
+    <div class="tab-bar">
+      <button id="tab-user" class="tab-btn active" type="button">상담 / 방문예약</button>
+      <button id="tab-admin" class="tab-btn" type="button">관리자 🔒</button>
+    </div>
+
+    <!-- [1] 고객용 신청 화면 -->
+    <div id="view-user" class="user-view">
+      <section class="hero">
+        <div class="badge">선착순 잔여세대 동·호수 우선 지정 접수</div>
+        <h1 class="hero-title">한강 푸르지오 리버프론트<br/><span>VIP 모델하우스 방문예약</span></h1>
+        <p class="hero-desc">
+          대우건설 총 2,682세대 대단지 랜드마크!<br/>
+          호갱노노보다 빠른 잔여 호실 선점 & 1:1 맞춤 배정 혜택을 드립니다.
         </p>
       </section>
 
-      <!-- 혜택 배너 -->
-      <div class="benefit-banner">
-        🎁 <strong>선착순 특별 프로모션:</strong><br/>
-        사전 방문예약 및 상담 신청 고객 대상 <strong>백화점 상품권 증정</strong> 및 <strong>로열층 우선 지정 혜택</strong>을 제공합니다.
+      <div class="promo-banner">
+        🎁 <strong>사전 방문예약 특별 혜택 안내:</strong><br/>
+        온라인 예약 후 모델하우스 방문 시 <strong>백화점 상품권 증정</strong> 및 <strong>발코니 확장 무상 옵션 우선 상담</strong>을 제공합니다.
       </div>
 
-      <!-- 4대 평형 카드 그리드 (스크린샷 규격) -->
-      <section class="card-grid">
-        <div class="unit-card active" data-type="84㎡ (34평형)">
-          <div>
-            <div class="unit-size">84m²</div>
-            <div class="unit-count">1,775세대</div>
-            <div class="unit-price">6억 4,300만원 ~<br/>7억 7,300만원</div>
-          </div>
-          <div class="unit-action">6개 타입 평면 보기 →</div>
-        </div>
-
-        <div class="unit-card" data-type="106㎡">
-          <div>
-            <div class="unit-size">106m²</div>
-            <div class="unit-count">432세대</div>
-            <div class="unit-price">7억 8,000만원 ~<br/>9억 5,100만원</div>
-          </div>
-          <div class="unit-action">2개 타입 평면 보기 →</div>
-        </div>
-
-        <div class="unit-card" data-type="122㎡">
-          <div>
-            <div class="unit-size">122m²</div>
-            <div class="unit-count">216세대</div>
-            <div class="unit-price">9억 800만원 ~<br/>11억 8,600만원</div>
-          </div>
-          <div class="unit-action">1개 타입 평면 보기 →</div>
-        </div>
-
-        <div class="unit-card" data-type="180㎡ PH">
-          <div>
-            <div class="unit-size">180m² PH</div>
-            <div class="unit-count">9세대</div>
-            <div class="unit-price">29억 2,200만원 ~<br/>29억 9,900만원</div>
-          </div>
-          <div class="unit-action">3개 타입 평면 보기 →</div>
-        </div>
-      </section>
-
-      <!-- 단지 개요 및 기본 정보 복원 -->
-      <section class="section">
+      <section class="content-section">
         <h3 class="section-title">🏢 단지 개요 및 기본 정보</h3>
         <ul class="info-list">
-          <li>• <strong>위치:</strong> 경기도 김포시 고촌읍 향산리 588-45번지 일원 (한강시네폴리스)</li>
-          <li>• <strong>규모:</strong> 지하 4층 ~ 지상 38층, 아파트 12개 동(2,432세대) + 오피스텔 250실 (총 2,682세대)</li>
-          <li>• <strong>입주 예정일:</strong> 2031년 1월 예정</li>
-          <li>• <strong>시행 / 시공:</strong> 한강시네폴리스개발(시행) / 대우건설(시공)</li>
+          <li><strong>위치:</strong> 경기도 김포시 고촌읍 향산리 588-45번지 일원 (한강시네폴리스 개발지구)</li>
+          <li><strong>규모:</strong> 지하 4층 ~ 지상 최고 38층, 아파트 12개 동 (2,432세대) + 오피스텔 1개 동 (250실)</li>
+          <li><strong>입주 예정일:</strong> 2031년 1월 예정</li>
+          <li><strong>시행 / 시공:</strong> 한강시네폴리스개발(시행) / 대우건설(시공)</li>
         </ul>
       </section>
 
-      <!-- 입지 프리미엄 환경 복원 -->
-      <section class="section">
+      <section class="content-section">
+        <h3 class="section-title">💰 주요 타입별 분양가 (최고가 기준)</h3>
+        <div class="price-grid">
+          <div class="price-card">
+            <div class="type">전용 84㎡ (34평형)</div>
+            <div class="price">약 7.19억 ~ 7.73억</div>
+          </div>
+          <div class="price-card">
+            <div class="type">전용 106㎡</div>
+            <div class="price">약 9.50억 ~ 9.51억</div>
+          </div>
+          <div class="price-card">
+            <div class="type">전용 122㎡</div>
+            <div class="price">약 11억 8,600만 원</div>
+          </div>
+          <div class="price-card">
+            <div class="type">전용 180㎡ (펜트)</div>
+            <div class="price">약 29.22억 ~ 29.99억</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
         <h3 class="section-title">✨ 핵심 프리미엄 환경</h3>
         <div class="point-card">
           <span class="point-badge">영구조망</span>
-          <div class="point-text">
+          <div class="point-content">
             <h4>탁 트인 영구 한강 조망권</h4>
-            <p>북측 한강 및 올림픽대로 인접, 일부 세대 파노라마 한강 조망</p>
+            <p>북측 한강 및 올림픽대로 인접, 일부 세대 파노라마 한강 조망 프리미엄</p>
           </div>
         </div>
         <div class="point-card">
           <span class="point-badge">교통호재</span>
-          <div class="point-text">
-            <h4>서울 5호선 연장 (예타 통과)</h4>
-            <p>인천 2호선 연장 계획 등 서울 마곡·여의도 쾌속 연결망</p>
+          <div class="point-content">
+            <h4>서울 5호선 연장(예타 통과)</h4>
+            <p>인천 지하철 2호선 연장 계획 등 서울 마곡·여의도 쾌속 연결망</p>
           </div>
         </div>
         <div class="point-card">
-          <span class="point-badge">교육·인프라</span>
-          <div class="point-text">
+          <span class="point-badge">교육·쇼핑</span>
+          <div class="point-content">
             <h4>초등학교 신설 및 몰세권</h4>
-            <p>단지 인근 초교 설립 예정(2029년) & 현대프리미엄아울렛 인접</p>
+            <p>단지 인근 초등학교 설립 예정(2029년) & 현대프리미엄아울렛 김포점 인접</p>
           </div>
         </div>
         <div class="point-card">
           <span class="point-badge">커뮤니티</span>
-          <div class="point-text">
-            <h4>대단지 하이엔드 부대시설</h4>
-            <p>그리너리 라운지, 사우나, 실내체육관, 골프클럽, 게스트하우스 등</p>
+          <div class="point-content">
+            <h4>하이엔드 커뮤니티 계획</h4>
+            <p>그리너리 라운지, 실내체육관, 사우나, 골프클럽, 게스트하우스, 시네마룸 등</p>
           </div>
         </div>
       </section>
 
-      <!-- 5060 맞춤형 간결 입력 폼 -->
-      <section id="form-section" class="form-wrap">
-        <h2 class="form-h2">상담 및 잔여세대 조회 신청</h2>
-        <p class="form-desc">성함과 연락처를 남겨주시면 담당 전문 상담사가 10분 내로 연락드립니다.</p>
-
-        <form id="lead-form" novalidate>
-          <div class="field">
-            <label class="label" for="user-name">성함</label>
-            <input id="user-name" class="input" type="text" placeholder="성함을 입력하세요" autocomplete="name" />
-            <p id="err-name" class="error-msg">성함을 입력해 주세요.</p>
+      <section class="form-section">
+        <div class="form-box">
+          <div class="form-header">
+            <h3>선착순 잔여세대 조회 & 방문예약</h3>
+            <p>신청해 주시면 전문 상담사가 10분 내로 안내 전화를 드립니다.</p>
           </div>
 
-          <div class="field">
-            <label class="label" for="user-phone">휴대전화 번호</label>
-            <input id="user-phone" class="input" type="tel" placeholder="010-0000-0000" autocomplete="tel" />
-            <p id="err-phone" class="error-msg">올바른 휴대전화 번호(010-XXXX-XXXX)를 입력해 주세요.</p>
+          <div class="notice-box">
+            <strong>안내:</strong> 한강 푸르지오 리버프론트 잔여 동호수 조회 및 모델하우스 VIP 방문예약 안내를 위해서만 이름과 연락처를 수집합니다.
           </div>
 
-          <div class="field">
-            <label class="label">선택 평형</label>
-            <input id="selected-type-input" class="input" type="text" value="84㎡ (34평형)" readonly style="background:#f1f5f9; font-weight:700;" />
-          </div>
+          <form id="lead-form" novalidate>
+            <div class="input-group">
+              <label class="input-label">신청 구분</label>
+              <div class="purpose-grid">
+                <div class="purpose-btn selected" data-value="선착순 잔여세대 조회">선착순 잔여세대 조회</div>
+                <div class="purpose-btn" data-value="모델하우스 방문예약">모델하우스 방문예약</div>
+              </div>
+            </div>
 
-          <button type="submit" class="btn-submit">선착순 상담 신청하기</button>
-        </form>
+            <div class="input-group">
+              <label class="input-label" for="user-name">성함</label>
+              <input id="user-name" class="input-field" type="text" placeholder="예: 홍길동" required autocomplete="name" />
+              <div id="err-name" class="error-msg">성함을 입력해 주세요.</div>
+            </div>
+
+            <div class="input-group">
+              <label class="input-label" for="user-phone">휴대전화 번호</label>
+              <input id="user-phone" class="input-field" type="tel" placeholder="010-0000-0000" required autocomplete="tel" />
+              <div id="err-phone" class="error-msg">올바른 휴대전화 번호(010-XXXX-XXXX)를 입력해 주세요.</div>
+            </div>
+
+            <div class="input-group">
+              <label class="input-label">관심 평형 (선택)</label>
+              <div class="radio-grid">
+                <div class="radio-card selected" data-value="84㎡ (34평형)">84㎡ (34평)</div>
+                <div class="radio-card" data-value="106㎡">106㎡</div>
+                <div class="radio-card" data-value="122㎡">122㎡</div>
+                <div class="radio-card" data-value="180㎡ (펜트)">180㎡ (펜트)</div>
+              </div>
+            </div>
+
+            <button type="submit" class="submit-btn">선착순 동·호수 조회 및 예약하기 →</button>
+          </form>
+        </div>
       </section>
+    </div>
 
-      <!-- 푸터 -->
-      <footer class="footer">
-        <p><strong>한강 푸르지오 리버프론트 분양 상담 공식 접수처</strong></p>
-        <p>홈페이지관리자: 한스타일즈 | 대표전화: 1533-8757</p>
-        <p style="font-size: 11px; color: #94a3b8; margin-top: 4px;">시행: 한강시네폴리스개발 | 시공: 대우건설</p>
-      </footer>
-    </main>
+    <!-- [2] 접수 완료 화면 -->
+    <div id="view-complete" class="complete-view">
+      <div class="complete-icon">✓</div>
+      <h2>예약 및 조회가 접수되었습니다</h2>
+      <p>남겨주신 번호(<strong id="success-phone" style="color:#2563eb;"></strong>)로<br/>전문 상담사가 확인 후 빠르게 연락드리겠습니다.</p>
+      <a href="tel:1533-8757" class="btn-action btn-call">📞 대표전화 1533-8757 바로 연결</a>
+      <button id="btn-back" type="button" class="btn-action btn-reset">처음 화면으로 돌아가기</button>
+    </div>
 
-    <!-- 관리자 뷰 (비밀번호: 2580) -->
-    <section id="view-admin" class="admin-view">
-      <div id="admin-lock" class="admin-lock">
-        <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 8px;">관리자 명부</h2>
-        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">비밀번호 4자리를 입력하세요.</p>
+    <!-- [3] 관리자 명부 화면 -->
+    <div id="view-admin" class="admin-view">
+      <div id="admin-lock" class="lock-box">
+        <div style="font-size: 32px; margin-bottom: 8px;">🔒</div>
+        <h2>관리자 전용 명부</h2>
+        <p>외부인은 볼 수 없게 암호로 잠겨 있습니다.<br/><strong>(비밀번호 4자리 입력)</strong></p>
         <input id="admin-pin" class="pin-input" type="password" maxlength="4" placeholder="••••" />
-        <p id="admin-err" class="error-msg" style="margin-bottom: 12px;">비밀번호가 일치하지 않습니다.</p>
-        <button id="btn-unlock" class="btn-submit" type="button" style="width: 160px; height: 46px; margin: 0 auto; display: block; font-size: 15px;">명부 열기</button>
+        <div id="admin-pin-err" class="error-msg" style="margin-bottom:8px;">비밀번호가 일치하지 않습니다.</div>
+        <button id="btn-unlock" type="button" class="submit-btn" style="width: 140px; margin: 0 auto; display: block; padding: 10px;">명부 열기</button>
       </div>
 
-      <div id="admin-panel" style="display: none;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-          <h3 style="font-size:18px; font-weight:800;">실시간 접수 명부 (총 <span id="count-all">0</span>건)</h3>
-          <button id="btn-lock" type="button" style="padding:6px 12px; font-size:12px; border:1px solid #cbd5e1; background:#fff; border-radius:6px; cursor:pointer;">잠그기</button>
+      <div id="admin-list" style="display: none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid #e2e8f0; padding-bottom:10px;">
+          <div>
+            <h3 style="font-size:16px; font-weight:700;">실시간 접수 명단</h3>
+            <p style="font-size:11px; color:#64748b;">최근 접수된 순서대로 표시됩니다.</p>
+          </div>
+          <button id="btn-lock" type="button" style="padding:4px 8px; font-size:11px; background:#e2e8f0; border:none; border-radius:6px; cursor:pointer;">잠그기</button>
         </div>
-
-        <div class="admin-filter">
-          <button class="filter-btn active" data-filter="all">전체보기</button>
-          <button class="filter-btn" data-filter="1">1팀 상담사</button>
-          <button class="filter-btn" data-filter="2">2팀 상담사</button>
-        </div>
-
-        <div id="leads-container"></div>
-      </div>
-    </section>
-
-    <!-- 하단 고정 바 -->
-    <nav class="bottom-bar">
-      <a id="btn-direct-call" href="tel:1533-8757" class="bar-btn">
-        <span>📞</span> 전화 문의
-      </a>
-      <a id="btn-direct-sms" href="sms:010-4540-6480?body=한강푸르지오 상담 문의합니다" class="bar-btn">
-        <span>💬</span> 문자 문의
-      </a>
-      <button id="btn-bar-cta" class="bar-btn bar-btn-primary" type="button">
-        <span>📝</span> 상담 신청
-      </button>
-    </nav>
-
-    <!-- 접수 완료 모달 -->
-    <div id="modal-success" class="modal">
-      <div class="modal-box">
-        <div class="modal-icon">✓</div>
-        <h3 class="modal-title">상담 신청이 접수되었습니다</h3>
-        <p class="modal-desc">남겨주신 번호로 담당 상담사가 확인 후 빠르게 연락드리겠습니다.</p>
-        <button id="btn-close-modal" class="modal-btn" type="button">확인</button>
+        <div id="lead-container"></div>
       </div>
     </div>
 
+    <footer class="footer">
+      <p><strong>한강 푸르지오 리버프론트 분양 상담 공식 접수처</strong></p>
+      <p>홈페이지관리자: 한스타일즈 | 대표전화: <strong>1533-8757</strong></p>
+      <p style="font-size: 10px; color: #94a3b8; margin-top: 4px;">시행: 한강시네폴리스개발 | 시공: 대우건설</p>
+    </footer>
   </div>
 
   <script>
-    (function () {
-      var params = new URLSearchParams(window.location.search);
-      var managerParam = params.get('m');
-      var assignedManager = managerParam === '1' ? '1팀' : (managerParam === '2' ? '2팀' : null);
-
-      var managers = {
-        '1팀': { name: '1팀 한지훈', phone: '010-4540-6480' },
-        '2팀': { name: '2팀 상담사', phone: '1533-8757' }
-      };
-
+    (function() {
       var leads = [
-        { name: '한지훈', phone: '010-4540-6480', type: '84㎡ (34평형)', manager: '1팀', time: '방금 전' },
-        { name: '김정숙 (예시)', phone: '010-5821-4920', type: '106㎡', manager: '2팀', time: '20분 전' },
-        { name: '박영호 (예시)', phone: '010-3819-2049', type: '84㎡ (34평형)', manager: '1팀', time: '1시간 전' }
+        { name: '한지훈', phone: '010-4540-6480', purpose: '선착순 잔여세대 조회', type: '84㎡ (34평형)', time: '방금 전 (기본 예시)' },
+        { name: '김은지 (예시)', phone: '010-3849-2910', purpose: '모델하우스 방문예약', type: '106㎡', time: '15분 전' },
+        { name: '박상현 (예시)', phone: '010-7712-4820', purpose: '선착순 잔여세대 조회', type: '122㎡', time: '1시간 전' }
       ];
 
+      var selectedPurpose = '선착순 잔여세대 조회';
       var selectedType = '84㎡ (34평형)';
-      var ADMIN_PIN = '2580';
-      var currentFilter = 'all';
+      var isUnlocked = false;
+      var ADMIN_PASSWORD = '2580'; // 변경된 관리자 비밀번호: 2580
 
       var viewUser = document.getElementById('view-user');
+      var viewComplete = document.getElementById('view-complete');
       var viewAdmin = document.getElementById('view-admin');
-      var formSection = document.getElementById('form-section');
-      var cards = document.querySelectorAll('.unit-card');
-      var selectedTypeInput = document.getElementById('selected-type-input');
+      var tabUser = document.getElementById('tab-user');
+      var tabAdmin = document.getElementById('tab-admin');
+
       var form = document.getElementById('lead-form');
       var nameInput = document.getElementById('user-name');
       var phoneInput = document.getElementById('user-phone');
       var errName = document.getElementById('err-name');
       var errPhone = document.getElementById('err-phone');
-      var modal = document.getElementById('modal-success');
-      var btnCloseModal = document.getElementById('btn-close-modal');
-
-      var btnTopCta = document.getElementById('btn-top-cta');
-      var btnBarCta = document.getElementById('btn-bar-cta');
-      var btnDirectCall = document.getElementById('btn-direct-call');
-      var btnDirectSms = document.getElementById('btn-direct-sms');
+      var successPhone = document.getElementById('success-phone');
+      var btnBack = document.getElementById('btn-back');
 
       var adminLock = document.getElementById('admin-lock');
-      var adminPanel = document.getElementById('admin-panel');
+      var adminList = document.getElementById('admin-list');
       var adminPin = document.getElementById('admin-pin');
-      var adminErr = document.getElementById('admin-err');
+      var adminPinErr = document.getElementById('admin-pin-err');
       var btnUnlock = document.getElementById('btn-unlock');
       var btnLock = document.getElementById('btn-lock');
-      var leadsContainer = document.getElementById('leads-container');
-      var countAll = document.getElementById('count-all');
-      var filterBtns = document.querySelectorAll('.filter-btn');
+      var leadContainer = document.getElementById('lead-container');
 
-      if (assignedManager && managers[assignedManager]) {
-        btnDirectCall.href = 'tel:' + managers[assignedManager].phone;
-        btnDirectSms.href = 'sms:' + managers[assignedManager].phone + '?body=한강푸르지오 상담 문의합니다';
-      }
-
-      cards.forEach(function (card) {
-        card.addEventListener('click', function () {
-          cards.forEach(function (c) { c.classList.remove('active'); });
-          card.classList.add('active');
-          selectedType = card.getAttribute('data-type');
-          selectedTypeInput.value = selectedType;
-          formSection.scrollIntoView({ behavior: 'smooth' });
+      var purposeBtns = document.querySelectorAll('.purpose-btn');
+      purposeBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          purposeBtns.forEach(function(b) { b.classList.remove('selected'); });
+          btn.classList.add('selected');
+          selectedPurpose = btn.getAttribute('data-value');
         });
       });
 
-      function scrollToForm() {
-        formSection.scrollIntoView({ behavior: 'smooth' });
-        nameInput.focus();
-      }
-      btnTopCta.addEventListener('click', scrollToForm);
-      btnBarCta.addEventListener('click', scrollToForm);
+      var radioCards = document.querySelectorAll('.radio-card');
+      radioCards.forEach(function(card) {
+        card.addEventListener('click', function() {
+          radioCards.forEach(function(c) { c.classList.remove('selected'); });
+          card.classList.add('selected');
+          selectedType = card.getAttribute('data-value');
+        });
+      });
 
-      phoneInput.addEventListener('input', function (e) {
-        var num = e.target.value.replace(/\D/g, '');
+      phoneInput.addEventListener('input', function(e) {
+        var num = e.target.value.replace(/[^0-9]/g, '');
         var res = num;
         if (num.length > 3 && num.length <= 7) {
           res = num.slice(0, 3) + '-' + num.slice(3);
@@ -473,117 +387,107 @@
           res = num.slice(0, 3) + '-' + num.slice(3, 7) + '-' + num.slice(7, 11);
         }
         e.target.value = res;
-        if (/^01[016789]-\d{3,4}-\d{4}$/.test(res)) errPhone.style.display = 'none';
+        if (/^01[016789]-\d{3,4}-\d{4}$/.test(res)) {
+          errPhone.style.display = 'none';
+        }
       });
 
-      form.addEventListener('submit', function (e) {
+      tabUser.addEventListener('click', function() {
+        tabUser.classList.add('active');
+        tabAdmin.classList.remove('active');
+        viewUser.style.display = 'block';
+        viewComplete.style.display = 'none';
+        viewAdmin.style.display = 'none';
+      });
+
+      tabAdmin.addEventListener('click', function() {
+        tabAdmin.classList.add('active');
+        tabUser.classList.remove('active');
+        viewUser.style.display = 'none';
+        viewComplete.style.display = 'none';
+        viewAdmin.style.display = 'block';
+        renderAdmin();
+      });
+
+      btnBack.addEventListener('click', function() {
+        viewUser.style.display = 'block';
+        viewComplete.style.display = 'none';
+      });
+
+      form.addEventListener('submit', function(e) {
         e.preventDefault();
         var name = nameInput.value.trim();
         var phone = phoneInput.value.trim();
         var valid = true;
 
-        if (!name) { errName.style.display = 'block'; valid = false; }
-        else { errName.style.display = 'none'; }
+        if (!name) {
+          errName.style.display = 'block';
+          valid = false;
+        } else {
+          errName.style.display = 'none';
+        }
 
-        if (!/^01[016789]-\d{3,4}-\d{4}$/.test(phone)) { errPhone.style.display = 'block'; valid = false; }
-        else { errPhone.style.display = 'none'; }
+        if (!/^01[016789]-\d{3,4}-\d{4}$/.test(phone)) {
+          errPhone.style.display = 'block';
+          valid = false;
+        } else {
+          errPhone.style.display = 'none';
+        }
 
         if (!valid) return;
 
-        var targetManager = assignedManager;
-        if (!targetManager) {
-          var lastTeam = (leads.length > 0 && leads[0].manager === '1팀') ? '2팀' : '1팀';
-          targetManager = lastTeam;
-        }
-
         var now = new Date();
-        var timeStr = (now.getMonth() + 1) + '/' + now.getDate() + ' ' +
-                      now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+        var timeStr = now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes() + ' 접수';
+        leads.unshift({ name: name, phone: phone, purpose: selectedPurpose, type: selectedType, time: timeStr });
 
-        leads.unshift({
-          name: name,
-          phone: phone,
-          type: selectedType,
-          manager: targetManager,
-          time: timeStr
-        });
-
+        successPhone.textContent = phone;
         nameInput.value = '';
         phoneInput.value = '';
-        modal.style.display = 'flex';
+        viewUser.style.display = 'none';
+        viewComplete.style.display = 'block';
       });
 
-      btnCloseModal.addEventListener('click', function () {
-        modal.style.display = 'none';
-      });
-
-      var clickCount = 0;
-      var titleEl = document.querySelector('.header-title');
-      titleEl.addEventListener('click', function () {
-        clickCount++;
-        if (clickCount >= 3) {
-          clickCount = 0;
-          viewUser.style.display = 'none';
-          viewAdmin.style.display = 'block';
-        }
-      });
-
-      btnUnlock.addEventListener('click', function () {
-        if (adminPin.value === ADMIN_PIN) {
-          adminLock.style.display = 'none';
-          adminPanel.style.display = 'block';
+      btnUnlock.addEventListener('click', function() {
+        if (adminPin.value === ADMIN_PASSWORD) {
+          isUnlocked = true;
           adminPin.value = '';
-          adminErr.style.display = 'none';
+          adminPinErr.style.display = 'none';
           renderAdmin();
         } else {
-          adminErr.style.display = 'block';
+          adminPinErr.style.display = 'block';
         }
       });
 
-      btnLock.addEventListener('click', function () {
-        adminPanel.style.display = 'none';
-        adminLock.style.display = 'block';
-        viewAdmin.style.display = 'none';
-        viewUser.style.display = 'block';
-      });
-
-      filterBtns.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          filterBtns.forEach(function (b) { b.classList.remove('active'); });
-          btn.classList.add('active');
-          currentFilter = btn.getAttribute('data-filter');
-          renderAdmin();
-        });
+      btnLock.addEventListener('click', function() {
+        isUnlocked = false;
+        renderAdmin();
       });
 
       function renderAdmin() {
-        countAll.textContent = leads.length;
-        leadsContainer.innerHTML = '';
-
-        var filtered = leads.filter(function (lead) {
-          if (currentFilter === '1') return lead.manager === '1팀';
-          if (currentFilter === '2') return lead.manager === '2팀';
-          return true;
-        });
-
-        if (filtered.length === 0) {
-          leadsContainer.innerHTML = '<p style="text-align:center; padding:32px 0; color:#94a3b8; font-size:14px;">접수 내역이 없습니다.</p>';
+        if (!isUnlocked) {
+          adminLock.style.display = 'block';
+          adminList.style.display = 'none';
           return;
         }
+        adminLock.style.display = 'none';
+        adminList.style.display = 'block';
+        leadContainer.innerHTML = '';
 
-        filtered.forEach(function (lead) {
-          var row = document.createElement('div');
-          row.className = 'lead-row';
-          row.innerHTML =
+        leads.forEach(function(lead) {
+          var card = document.createElement('div');
+          card.className = 'lead-card';
+          card.innerHTML = 
             '<div>' +
-              '<span class="lead-tag">' + lead.manager + ' 배정</span> ' +
-              '<span class="lead-tag" style="background:#dbeafe; color:#1e40af;">' + lead.type + '</span>' +
-              '<div class="lead-name">' + lead.name + '</div>' +
+              '<div style="display:flex; align-items:center; gap:6px; margin-bottom:2px;">' +
+                '<span class="lead-name">' + lead.name + '</span>' +
+                '<span style="font-size:10px; background:#eff6ff; color:#2563eb; padding:2px 6px; border-radius:4px; font-weight:600;">' + (lead.purpose || '상담') + '</span>' +
+                '<span style="font-size:10px; background:#f1f5f9; color:#475569; padding:2px 6px; border-radius:4px; font-weight:600;">' + lead.type + '</span>' +
+              '</div>' +
               '<div class="lead-phone">' + lead.phone + '</div>' +
-              '<div style="font-size:12px; color:#94a3b8;">' + lead.time + '</div>' +
+              '<div class="lead-time">' + lead.time + '</div>' +
             '</div>' +
-            '<a href="tel:' + lead.phone.replace(/\D/g, '') + '" class="lead-call">📞 통화</a>';
-          leadsContainer.appendChild(row);
+            '<a href="tel:' + lead.phone.replace(/[^0-9]/g, '') + '" class="btn-lead-call">📞 바로 전화</a>';
+          leadContainer.appendChild(card);
         });
       }
     })();
