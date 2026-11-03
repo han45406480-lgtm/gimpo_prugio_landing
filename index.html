@@ -993,11 +993,18 @@
           errName.style.display = 'none';
         }
 
-        if (!/^01[016789]-\d{3,4}-\d{4}$/.test(phone)) {
+        // 숫자만 추출해 하이픈 유무/공백과 무관하게 인식 (01012345678, 010 1234 5678 등도 허용)
+        var digitsOnly = phone.replace(/[^0-9]/g, '');
+        var normalizedPhone = digitsOnly;
+        if (/^01[016789]\d{7,8}$/.test(digitsOnly)) {
+          normalizedPhone = digitsOnly.length === 10
+            ? digitsOnly.replace(/^(\d{3})(\d{3})(\d{4})$/, '$1-$2-$3')
+            : digitsOnly.replace(/^(\d{3})(\d{4})(\d{4})$/, '$1-$2-$3');
+          phone = normalizedPhone;
+          errPhone.style.display = 'none';
+        } else {
           errPhone.style.display = 'block';
           valid = false;
-        } else {
-          errPhone.style.display = 'none';
         }
 
         if (!valid) return;
