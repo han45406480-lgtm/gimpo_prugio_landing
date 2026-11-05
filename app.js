@@ -115,5 +115,18 @@
       [name, phone, consent, overseas].forEach(function (input) { input.disabled = false; });
     }
   });
+  el('sheet-access').addEventListener('submit', async function (event) {
+    event.preventDefault();
+    var input = el('sheet-code');
+    var bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input.value.trim()));
+    input.value = '';
+    var hash = Array.from(new Uint8Array(bytes), function (b) { return b.toString(16).padStart(2, '0'); }).join('');
+    if (hash !== 'ed946f65d2c785d90e827c5ffd879ce3b49c68d4c88013074176a7e73bc58bcf') {
+      el('sheet-status').textContent = '비밀번호를 확인해 주세요.';
+      input.focus();
+      return;
+    }
+    window.location.assign('https://docs.google.com/spreadsheets/d/1TDWVRv0u-HS2koHcsSx3JxVrB4FudIz4178pwLiHWDs/edit');
+  });
   configure();
 })();

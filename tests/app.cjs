@@ -26,7 +26,7 @@ test('HTML has no seed customer records or local PIN gate; submits start disable
   assert.ok(!/ADMIN_PIN|admin-pin|var leads|leads\.unshift/.test(html+script));
   assert.ok(!/localStorage|sessionStorage|indexedDB/.test(script));
   assert.match(html,/<button id="btn-submit"[^>]*disabled>/);
-  assert.match(html,/https:\/\/bunyang-ai-studio.vercel.app\/gimpo\/admin/);
+  assert.match(script,/https:\/\/docs\.google\.com\/spreadsheets\/d\//);
 });
 test('disabled or incomplete server policy never opens intake',async()=>{
   for(const config of [{enabled:false},{enabled:true}, {...settings,retentionMonths:0}, {...settings,retentionTimeZone:'UTC'}, {...settings,retentionDays:30,retentionMonths:undefined}]) {
